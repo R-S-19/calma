@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Environment (never commit secrets)
+.env
+
+# Build / runtime
+dist/
+*.log
+.env.local
+.env.*.local
