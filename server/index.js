@@ -1,13 +1,20 @@
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const authRoutes = require("./routes/auth");
+const requireAuth = require("./middleware/requireAuth");
+const User = require("./models/User");
 
 const app = express();
 
 // Middleware (runs on every request)
 app.use(cors());
 app.use(express.json());
+
+// Routes
+app.use("/api/auth", authRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
@@ -16,6 +23,13 @@ app.get("/api/health", (req, res) => {
     app: "calma",
     time: new Date().toISOString(),
   });
+});
+
+// GET /api/auth/me (basic "who am I?" endpoint)
+app.get("/api/auth/me", requireAuth, async (req, res) => {
+  const user = await User.findById(req.userId).select("_id email");
+  if (!user) return res.status(404).json({ message: "User not found." });
+  return res.json({ user: { id: user._id, email: user.email } });
 });
 
 const PORT = process.env.PORT || 5001;
