@@ -1,14 +1,41 @@
-function App() {
-  return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b border-gray-200 bg-white px-4 py-3">
-        <h1 className="text-xl font-semibold text-gray-800">Calma</h1>
-      </header>
-      <main className="flex-1 p-4">
-        <p className="text-gray-600">Welcome. Dashboard and features go here.</p>
-      </main>
-    </div>
-  )
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { getToken } from "./lib/auth";
+import Landing from "./pages/Landing";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+
+function ProtectedRoute({ children }) {
+  if (!getToken()) return <Navigate to="/" replace />;
+  return children;
 }
 
-export default App
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={getToken() ? <Navigate to="/dashboard" replace /> : <Landing />}
+        />
+        <Route
+          path="/login"
+          element={getToken() ? <Navigate to="/dashboard" replace /> : <Login />}
+        />
+        <Route
+          path="/register"
+          element={getToken() ? <Navigate to="/dashboard" replace /> : <Register />}
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  )
+}
