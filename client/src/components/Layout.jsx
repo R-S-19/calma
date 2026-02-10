@@ -21,6 +21,9 @@ export default function Layout({ children }) {
             <Link to="/tasks" className="text-gray-600 hover:text-gray-800">
               Tasks
             </Link>
+            <Link to="/habits" className="text-gray-600 hover:text-gray-800">
+              Habits
+            </Link>
           </nav>
         </div>
         <button
