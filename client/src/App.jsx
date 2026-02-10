@@ -4,6 +4,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import Tasks from "./pages/Tasks";
 
 function ProtectedRoute({ children }) {
   if (!getToken()) return <Navigate to="/" replace />;
@@ -31,6 +32,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tasks"
+          element={
+            <ProtectedRoute>
+              <Tasks />
             </ProtectedRoute>
           }
         />
