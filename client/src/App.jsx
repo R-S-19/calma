@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { FocusTimerProvider } from "./context/FocusTimerContext";
 import { getToken } from "./lib/auth";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -6,6 +7,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import Habits from "./pages/Habits";
+import Focus from "./pages/Focus";
 
 function ProtectedRoute({ children }) {
   if (!getToken()) return <Navigate to="/" replace />;
@@ -15,6 +17,7 @@ function ProtectedRoute({ children }) {
 export default function App() {
   return (
     <BrowserRouter>
+      <FocusTimerProvider>
       <Routes>
         <Route
           path="/"
@@ -52,8 +55,17 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/focus"
+          element={
+            <ProtectedRoute>
+              <Focus />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </FocusTimerProvider>
     </BrowserRouter>
   )
 }
