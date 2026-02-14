@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { FocusTimerProvider } from "./context/FocusTimerContext";
+import { LevelUpToastProvider, useLevelUpToast } from "./context/LevelUpToastContext";
 import { getToken } from "./lib/auth";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -14,10 +15,25 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+function LevelUpToast() {
+  const { message } = useLevelUpToast();
+  if (!message) return null;
+  return (
+    <div
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-xl bg-[#87a878]/90 text-white text-sm font-medium shadow-lg z-50 animate-[pulse_0.5s_ease-out]"
+      role="status"
+      aria-live="polite"
+    >
+      {message}
+    </div>
+  );
+}
+
 export default function App() {
   return (
-    <BrowserRouter>
-      <FocusTimerProvider>
+    <LevelUpToastProvider>
+      <BrowserRouter>
+        <FocusTimerProvider>
       <Routes>
         <Route
           path="/"
@@ -65,7 +81,9 @@ export default function App() {
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      </FocusTimerProvider>
-    </BrowserRouter>
+        </FocusTimerProvider>
+        <LevelUpToast />
+      </BrowserRouter>
+    </LevelUpToastProvider>
   )
 }

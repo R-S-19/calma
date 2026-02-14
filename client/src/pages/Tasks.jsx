@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { API_URL } from "../lib/api";
 import { getToken } from "../lib/auth";
+import { useLevelUpToast } from "../context/LevelUpToastContext";
 import Layout from "../components/Layout";
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
+  const { showLevelUp } = useLevelUpToast();
   const [loading, setLoading] = useState(true);
   const [newTitle, setNewTitle] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -65,6 +67,7 @@ export default function Tasks() {
         setTasks((prev) =>
           prev.map((t) => (t._id === data.task._id ? data.task : t))
         );
+        if (data.leveledUpTraits?.length) showLevelUp(data.leveledUpTraits);
       })
       .catch(() => setError("Could not update task"));
   }

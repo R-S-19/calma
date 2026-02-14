@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { API_URL } from "../lib/api";
 import { getToken } from "../lib/auth";
+import { useLevelUpToast } from "../context/LevelUpToastContext";
 import Layout from "../components/Layout";
 
 export default function Habits() {
   const [habits, setHabits] = useState([]);
+  const { showLevelUp } = useLevelUpToast();
   const [loading, setLoading] = useState(true);
   const [newName, setNewName] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -58,12 +60,16 @@ export default function Habits() {
     fetch(url, { method, headers })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to update");
+        return method === "POST" ? res.json() : null;
+      })
+      .then((data) => {
         if (method === "POST") {
           setHabits((prev) =>
             prev.map((h) =>
               h._id === habit._id ? { ...h, completedToday: true } : h
             )
           );
+          if (data?.leveledUpTraits?.length) showLevelUp(data.leveledUpTraits);
         } else {
           setHabits((prev) =>
             prev.map((h) =>
