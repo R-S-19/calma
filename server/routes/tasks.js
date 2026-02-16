@@ -42,6 +42,7 @@ router.patch("/:id", async (req, res) => {
     if (!task) return res.status(404).json({ message: "Task not found." });
     const wasCompleted = task.completed;
     task.completed = !task.completed;
+    task.completedAt = task.completed ? new Date() : null;
     await task.save();
     let leveledUpTraits = [];
     if (!wasCompleted && task.completed) {

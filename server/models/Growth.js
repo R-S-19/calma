@@ -41,6 +41,5 @@ const growthSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-growthSchema.index({ userId: 1 });
 
 module.exports = mongoose.model("Growth", growthSchema);
