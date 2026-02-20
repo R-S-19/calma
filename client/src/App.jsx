@@ -20,7 +20,7 @@ function LevelUpToast() {
   if (!message) return null;
   return (
     <div
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-xl bg-[#87a878]/90 text-white text-sm font-medium shadow-lg z-50 animate-[pulse_0.5s_ease-out]"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-xl bg-amber-600/95 text-white text-sm font-medium shadow-lg shadow-amber-500/30 z-50 animate-[pulse_0.5s_ease-out]"
       role="status"
       aria-live="polite"
     >

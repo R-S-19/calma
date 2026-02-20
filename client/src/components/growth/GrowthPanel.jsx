@@ -9,16 +9,16 @@ export default function GrowthPanel() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm animate-pulse">
-        <div className="h-6 bg-gray-100 rounded w-1/3" />
-        <div className="h-4 bg-gray-100 rounded w-1/2 mt-2" />
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-4 animate-pulse">
+        <div className="h-6 bg-white/10 rounded w-1/3" />
+        <div className="h-4 bg-white/10 rounded w-1/2 mt-2" />
       </div>
     );
   }
 
   if (error || !growth) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm text-gray-500 text-sm">
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-white/50 text-sm">
         Growth data unavailable.
       </div>
     );
@@ -35,25 +35,25 @@ export default function GrowthPanel() {
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden shadow-[0_0_40px_rgba(212,165,116,0.06)]">
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
-        className="w-full p-4 text-left flex items-center justify-between gap-4 hover:bg-gray-50/50 transition-colors duration-300 ease-in-out"
+        className="w-full p-4 text-left flex items-center justify-between gap-4 hover:bg-white/5 transition-colors duration-300 ease-in-out"
       >
         <div>
-          <p className="text-sm font-medium text-[#87a878]">🌿 Growth</p>
-          <p className="text-gray-800 font-semibold">Level {totalLevel}</p>
-          <p className="text-sm text-gray-600 mt-1">{title}</p>
+          <p className="text-sm font-medium text-amber-400">Growth</p>
+          <p className="text-white font-semibold">Level {totalLevel}</p>
+          <p className="text-sm text-white/60 mt-1">{title}</p>
         </div>
-        <span className="text-gray-400 text-sm">
+        <span className="text-white/50 text-sm">
           {expanded ? "▲" : "View Details →"}
         </span>
       </button>
 
       {expanded && (
         <div
-          className="px-4 pb-4 border-t border-gray-100"
+          className="px-4 pb-4 border-t border-white/10"
           style={{ animation: "slideDown 0.3s ease-in-out" }}
         >
           <style>{`
@@ -79,19 +79,19 @@ export default function GrowthPanel() {
           </div>
 
           {totalLevel < 50 && remainingXP != null && (
-            <p className="text-xs text-gray-500 mt-4">
+            <p className="text-xs text-white/50 mt-4">
               Next level in {remainingXP} growth points
             </p>
           )}
 
           {recentGrowth && recentGrowth.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <h4 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
                 Recent growth
               </h4>
               <ul className="space-y-1">
                 {recentGrowth.slice(0, 3).map((g, i) => (
-                  <li key={i} className="text-sm text-gray-600">
+                  <li key={i} className="text-sm text-white/60">
                     {g.message}
                   </li>
                 ))}

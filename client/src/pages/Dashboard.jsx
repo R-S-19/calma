@@ -49,68 +49,70 @@ export default function Dashboard() {
   if (loading) {
     return (
       <Layout>
-        <p className="text-gray-600">Loading…</p>
+        <p className="text-white/50">Loading…</p>
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <h2 className="text-2xl font-semibold text-gray-800 mb-1">
-        {getGreeting()}
-      </h2>
-      <p className="text-sm text-gray-500 mb-6">Signed in as {user?.email}</p>
+      <div className="max-w-3xl mx-auto">
+        <h2 className="text-2xl font-semibold text-white mb-1">
+          {getGreeting()}
+        </h2>
+        <p className="text-sm text-white/60 mb-8">Signed in as {user?.email}</p>
 
-      <div className="flex flex-wrap gap-3 mb-8">
-        <Link
-          to="/tasks"
-          className="flex-1 min-w-[120px] px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-300 transition-colors text-center"
-        >
-          Add task
-        </Link>
-        <Link
-          to="/focus"
-          className="flex-1 min-w-[120px] px-4 py-3 rounded-xl bg-[#87a878] text-white font-medium hover:bg-[#7a906f] transition-colors text-center"
-        >
-          Start focus
-        </Link>
-        <Link
-          to="/habits"
-          className="flex-1 min-w-[120px] px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-300 transition-colors text-center"
-        >
-          Mark habit
-        </Link>
-      </div>
-
-      {summary && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
-          <div className="rounded-xl border border-gray-200 bg-white p-4">
-            <p className="text-2xl font-semibold text-gray-800">
-              {summary.tasksCompletedToday}
-              {summary.totalTasks > 0 && (
-                <span className="text-gray-500 font-normal text-base"> / {summary.totalTasks}</span>
-              )}
-            </p>
-            <p className="text-sm text-gray-500">Tasks done today</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-white p-4">
-            <p className="text-2xl font-semibold text-gray-800">
-              {summary.habitsDoneToday}
-              {summary.totalHabits > 0 && (
-                <span className="text-gray-500 font-normal text-base"> / {summary.totalHabits}</span>
-              )}
-            </p>
-            <p className="text-sm text-gray-500">Habits done today</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-white p-4">
-            <p className="text-2xl font-semibold text-gray-800">{summary.focusSessionsToday}</p>
-            <p className="text-sm text-gray-500">Focus sessions today</p>
-          </div>
+        <div className="flex flex-wrap gap-3 mb-8">
+          <Link
+            to="/tasks"
+            className="flex-1 min-w-[120px] px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white/90 font-medium hover:bg-white/10 transition-colors text-center"
+          >
+            Add task
+          </Link>
+          <Link
+            to="/focus"
+            className="flex-1 min-w-[120px] px-4 py-3 rounded-xl bg-amber-600/90 text-white font-medium hover:bg-amber-500/90 transition-colors text-center shadow-lg shadow-amber-500/20"
+          >
+            Start focus
+          </Link>
+          <Link
+            to="/habits"
+            className="flex-1 min-w-[120px] px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white/90 font-medium hover:bg-white/10 transition-colors text-center"
+          >
+            Mark habit
+          </Link>
         </div>
-      )}
 
-      <div className="max-w-md">
-        <GrowthPanel />
+        {summary && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+              <p className="text-2xl font-semibold text-white">
+                {summary.tasksCompletedToday}
+                {summary.totalTasks > 0 && (
+                  <span className="text-white/50 font-normal text-base"> / {summary.totalTasks}</span>
+                )}
+              </p>
+              <p className="text-sm text-white/50">Tasks done today</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+              <p className="text-2xl font-semibold text-white">
+                {summary.habitsDoneToday}
+                {summary.totalHabits > 0 && (
+                  <span className="text-white/50 font-normal text-base"> / {summary.totalHabits}</span>
+                )}
+              </p>
+              <p className="text-sm text-white/50">Habits done today</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+              <p className="text-2xl font-semibold text-white">{summary.focusSessionsToday}</p>
+              <p className="text-sm text-white/50">Focus sessions today</p>
+            </div>
+          </div>
+        )}
+
+        <div className="max-w-md">
+          <GrowthPanel />
+        </div>
       </div>
     </Layout>
   )

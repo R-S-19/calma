@@ -98,70 +98,81 @@ export default function Habits() {
 
   return (
     <Layout>
-      <h2 className="text-lg font-semibold text-gray-800 mb-1">Habits</h2>
-      <p className="text-sm text-gray-500 mb-4">{today}</p>
+      <div className="max-w-3xl mx-auto">
+        <h2 className="text-2xl font-semibold text-white mb-1">Habits</h2>
+        <p className="text-sm text-white/60 mb-6">{today}</p>
 
-      <form onSubmit={handleAdd} className="flex gap-2 mb-6">
-        <input
-          type="text"
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-          placeholder="e.g. Meditate 5 min"
-          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
-          disabled={submitting}
-        />
-        <button
-          type="submit"
-          disabled={submitting || !newName.trim()}
-          className="px-4 py-2 rounded-lg bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50"
-        >
-          Add
-        </button>
-      </form>
-
-      {error && (
-        <p className="text-sm text-red-600 bg-red-50 p-2 rounded mb-4">{error}</p>
-      )}
-
-      {loading ? (
-        <p className="text-gray-600">Loading habits…</p>
-      ) : habits.length === 0 ? (
-        <p className="text-gray-600">No habits yet. Add one above.</p>
-      ) : (
-        <ul className="space-y-2">
-          {habits.map((habit) => (
-            <li
-              key={habit._id}
-              className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg bg-white"
+        <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl p-4 mb-6 shadow-[0_0_40px_rgba(212,165,116,0.06)]">
+          <form onSubmit={handleAdd} className="flex gap-2">
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              placeholder="e.g. Meditate 5 min"
+              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-transparent"
+              disabled={submitting}
+            />
+            <button
+              type="submit"
+              disabled={submitting || !newName.trim()}
+              className="px-4 py-3 rounded-xl bg-amber-600/90 hover:bg-amber-500/90 text-white font-medium transition-all shadow-lg shadow-amber-500/20 disabled:opacity-50"
             >
-              <button
-                type="button"
-                onClick={() => handleToggleComplete(habit)}
-                className={`flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center ${
-                  habit.completedToday
-                    ? "bg-green-500 border-green-500 text-white"
-                    : "border-gray-300 hover:border-gray-500"
-                }`}
-                title={habit.completedToday ? "Mark not done" : "Mark done for today"}
+              Add
+            </button>
+          </form>
+        </div>
+
+        {error && (
+          <p className="text-amber-400 text-sm bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 mb-6">
+            {error}
+          </p>
+        )}
+
+        {loading ? (
+          <p className="text-white/50">Loading habits…</p>
+        ) : habits.length === 0 ? (
+          <div className="rounded-xl border border-white/10 bg-white/5 p-8 text-center">
+            <p className="text-white/60 text-lg mb-2">No habits yet.</p>
+            <p className="text-white/40 text-sm">
+              Add one above when you're ready. Small steps add up.
+            </p>
+          </div>
+        ) : (
+          <ul className="space-y-3">
+            {habits.map((habit) => (
+              <li
+                key={habit._id}
+                className="group flex items-center gap-3 p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all"
               >
-                {habit.completedToday && "✓"}
-              </button>
-              <span
-                className={`flex-1 ${habit.completedToday ? "text-gray-500 line-through" : "text-gray-800"}`}
-              >
-                {habit.name}
-              </span>
-              <button
-                type="button"
-                onClick={() => handleDelete(habit._id)}
-                className="text-sm text-red-600 hover:text-red-800"
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+                <button
+                  type="button"
+                  onClick={() => handleToggleComplete(habit)}
+                  className={`flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
+                    habit.completedToday
+                      ? "bg-amber-500 border-amber-500 text-white"
+                      : "border-white/30 hover:border-amber-400/60"
+                  }`}
+                  title={habit.completedToday ? "Mark not done" : "Mark done for today"}
+                >
+                  {habit.completedToday && "✓"}
+                </button>
+                <span
+                  className={`flex-1 ${habit.completedToday ? "text-white/50 line-through" : "text-white font-medium"}`}
+                >
+                  {habit.name}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(habit._id)}
+                  className="text-sm text-white/60 hover:text-amber-400 opacity-60 group-hover:opacity-100 transition-all"
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </Layout>
   )
 }
