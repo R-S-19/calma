@@ -29,14 +29,17 @@ router.get("/", async (req, res) => {
 // POST /api/tasks — create a task
 router.post("/", async (req, res) => {
   try {
-    const { title, priority } = req.body;
+    const { title, priority, dueDate, notes } = req.body;
     if (!title || typeof title !== "string" || !title.trim()) {
       return res.status(400).json({ message: "Title is required." });
     }
     const validPriority = ["high", "normal", "low"].includes(priority) ? priority : "normal";
+    const parsedDue = dueDate ? new Date(dueDate) : null;
     const task = await Task.create({
       title: title.trim(),
       priority: validPriority,
+      dueDate: parsedDue && !isNaN(parsedDue.getTime()) ? parsedDue : null,
+      notes: typeof notes === "string" ? notes.trim() : "",
       userId: req.userId,
     });
     return res.status(201).json({ task });
@@ -45,21 +48,35 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PATCH /api/tasks/:id — toggle completed or update priority
+// PATCH /api/tasks/:id — toggle completed or update fields (priority, dueDate, notes)
 router.patch("/:id", async (req, res) => {
   try {
     const task = await Task.findOne({ _id: req.params.id, userId: req.userId });
     if (!task) return res.status(404).json({ message: "Task not found." });
 
-    if (req.body?.priority !== undefined) {
-      const validPriority = ["high", "normal", "low"].includes(req.body.priority)
-        ? req.body.priority
-        : "normal";
-      task.priority = validPriority;
+    const body = req.body || {};
+    let hasUpdates = false;
+
+    if (body.priority !== undefined) {
+      task.priority = ["high", "normal", "low"].includes(body.priority) ? body.priority : "normal";
+      hasUpdates = true;
+    }
+    if (body.dueDate !== undefined) {
+      const parsed = body.dueDate ? new Date(body.dueDate) : null;
+      task.dueDate = parsed && !isNaN(parsed.getTime()) ? parsed : null;
+      hasUpdates = true;
+    }
+    if (body.notes !== undefined) {
+      task.notes = typeof body.notes === "string" ? body.notes.trim() : "";
+      hasUpdates = true;
+    }
+
+    if (hasUpdates) {
       await task.save();
       return res.json({ task });
     }
 
+    // Toggle completed when no other updates
     const wasCompleted = task.completed;
     task.completed = !task.completed;
     task.completedAt = task.completed ? new Date() : null;
