@@ -9,21 +9,46 @@ function todayString() {
   return new Date().toISOString().slice(0, 10);
 }
 
-// GET /api/habits — list habits for the user, with completedToday
+// GET /api/habits — list habits for the user, with completedToday and completionDates for the month
 router.get("/", async (req, res) => {
   try {
     const habits = await Habit.find({ userId: req.userId }).sort({ createdAt: -1 }).lean();
     const today = todayString();
-    const completions = await Completion.find({
-      userId: req.userId,
-      date: today,
-    }).lean();
-    const completedIds = new Set(completions.map((c) => c.habitId.toString()));
-    const habitsWithStatus = habits.map((h) => ({
-      ...h,
-      completedToday: completedIds.has(h._id.toString()),
-    }));
-    return res.json({ habits: habitsWithStatus });
+    const monthParam = req.query.month;
+    const month = monthParam && /^\d{4}-\d{2}$/.test(monthParam)
+      ? monthParam
+      : today.slice(0, 7);
+    const [year, monthNum] = month.split("-").map(Number);
+    const firstDay = new Date(year, monthNum - 1, 1);
+    const lastDay = new Date(year, monthNum, 0);
+    const startDate = firstDay.toISOString().slice(0, 10);
+    const endDate = lastDay.toISOString().slice(0, 10);
+
+    const [todayCompletions, monthCompletions] = await Promise.all([
+      Completion.find({ userId: req.userId, date: today }).lean(),
+      Completion.find({
+        userId: req.userId,
+        date: { $gte: startDate, $lte: endDate },
+      }).lean(),
+    ]);
+
+    const completedIds = new Set(todayCompletions.map((c) => c.habitId.toString()));
+    const completionByHabit = {};
+    for (const c of monthCompletions) {
+      const id = c.habitId.toString();
+      if (!completionByHabit[id]) completionByHabit[id] = [];
+      completionByHabit[id].push(c.date);
+    }
+
+    const habitsWithStatus = habits.map((h) => {
+      const id = h._id.toString();
+      return {
+        ...h,
+        completedToday: completedIds.has(id),
+        completionDates: completionByHabit[id] || [],
+      };
+    });
+    return res.json({ habits: habitsWithStatus, month });
   } catch (err) {
     return res.status(500).json({ message: err.message || "Server error" });
   }

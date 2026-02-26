@@ -3,6 +3,7 @@ import { API_URL } from "../lib/api";
 import { getToken } from "../lib/auth";
 import { useLevelUpToast } from "../context/LevelUpToastContext";
 import Layout from "../components/Layout";
+import HabitActivityGrid from "../components/habits/HabitActivityGrid";
 
 export default function Habits() {
   const [habits, setHabits] = useState([]);
@@ -11,6 +12,10 @@ export default function Habits() {
   const [newName, setNewName] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [viewMonth, setViewMonth] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+  });
 
   const token = getToken();
   const headers = { Authorization: `Bearer ${token}` };
@@ -18,7 +23,7 @@ export default function Habits() {
   function fetchHabits() {
     setLoading(true);
     setError("");
-    fetch(`${API_URL}/api/habits`, { headers })
+    fetch(`${API_URL}/api/habits?month=${viewMonth}`, { headers })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load habits");
         return res.json();
@@ -30,7 +35,7 @@ export default function Habits() {
 
   useEffect(() => {
     fetchHabits();
-  }, []);
+  }, [viewMonth]);
 
   async function handleAdd(e) {
     e.preventDefault();
@@ -63,17 +68,31 @@ export default function Habits() {
         return method === "POST" ? res.json() : null;
       })
       .then((data) => {
+        const today = new Date().toISOString().slice(0, 10);
+        const todayInView = today.startsWith(viewMonth);
         if (method === "POST") {
           setHabits((prev) =>
             prev.map((h) =>
-              h._id === habit._id ? { ...h, completedToday: true } : h
+              h._id === habit._id
+                ? {
+                    ...h,
+                    completedToday: true,
+                    completionDates: todayInView ? [...(h.completionDates || []), today] : h.completionDates || [],
+                  }
+                : h
             )
           );
           if (data?.leveledUpTraits?.length) showLevelUp(data.leveledUpTraits);
         } else {
           setHabits((prev) =>
             prev.map((h) =>
-              h._id === habit._id ? { ...h, completedToday: false } : h
+              h._id === habit._id
+                ? {
+                    ...h,
+                    completedToday: false,
+                    completionDates: todayInView ? (h.completionDates || []).filter((d) => d !== today) : h.completionDates || [],
+                  }
+                : h
             )
           );
         }
@@ -99,8 +118,40 @@ export default function Habits() {
   return (
     <Layout>
       <div className="max-w-3xl mx-auto">
-        <h2 className="text-2xl font-semibold text-white mb-1">Habits</h2>
-        <p className="text-sm text-white/60 mb-6">{today}</p>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-semibold text-white mb-1">Habits</h2>
+            <p className="text-sm text-white/60">{today}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const [y, m] = viewMonth.split("-").map(Number);
+                const prev = new Date(y, m - 2, 1);
+                setViewMonth(`${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, "0")}`);
+              }}
+              className="px-2 py-1 rounded-lg text-white/60 hover:text-white hover:bg-white/10 text-sm"
+            >
+              ←
+            </button>
+            <span className="text-sm text-white/70 min-w-[80px] text-center">
+              {new Date(viewMonth + "-01").toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                const [y, m] = viewMonth.split("-").map(Number);
+                const next = new Date(y, m, 1);
+                setViewMonth(`${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}`);
+              }}
+              disabled={viewMonth >= new Date().toISOString().slice(0, 7)}
+              className="px-2 py-1 rounded-lg text-white/60 hover:text-white hover:bg-white/10 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              →
+            </button>
+          </div>
+        </div>
 
         <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl p-4 mb-6 shadow-[0_0_40px_rgba(212,165,116,0.06)]">
           <form onSubmit={handleAdd} className="flex gap-2">
@@ -142,32 +193,42 @@ export default function Habits() {
             {habits.map((habit) => (
               <li
                 key={habit._id}
-                className="group flex items-center gap-3 p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all"
+                className="group rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all overflow-hidden"
               >
-                <button
-                  type="button"
-                  onClick={() => handleToggleComplete(habit)}
-                  className={`flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
-                    habit.completedToday
-                      ? "bg-amber-500 border-amber-500 text-white"
-                      : "border-white/30 hover:border-amber-400/60"
-                  }`}
-                  title={habit.completedToday ? "Mark not done" : "Mark done for today"}
-                >
-                  {habit.completedToday && "✓"}
-                </button>
-                <span
-                  className={`flex-1 ${habit.completedToday ? "text-white/50 line-through" : "text-white font-medium"}`}
-                >
-                  {habit.name}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(habit._id)}
-                  className="text-sm text-white/60 hover:text-amber-400 opacity-60 group-hover:opacity-100 transition-all"
-                >
-                  Delete
-                </button>
+                <div className="flex items-center gap-3 p-4">
+                  <button
+                    type="button"
+                    onClick={() => handleToggleComplete(habit)}
+                    className={`flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
+                      habit.completedToday
+                        ? "bg-amber-500 border-amber-500 text-white"
+                        : "border-white/30 hover:border-amber-400/60"
+                    }`}
+                    title={habit.completedToday ? "Mark not done" : "Mark done for today"}
+                  >
+                    {habit.completedToday && "✓"}
+                  </button>
+                  <span
+                    className={`flex-1 ${habit.completedToday ? "text-white/50 line-through" : "text-white font-medium"}`}
+                  >
+                    {habit.name}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(habit._id)}
+                    className="text-sm text-white/60 hover:text-amber-400 opacity-60 group-hover:opacity-100 transition-all"
+                  >
+                    Delete
+                  </button>
+                </div>
+                <div className="px-4 pb-4">
+                  <HabitActivityGrid
+                    completionDates={habit.completionDates || []}
+                    month={parseInt(viewMonth.split("-")[1], 10)}
+                    year={parseInt(viewMonth.split("-")[0], 10)}
+                    habitName={habit.name}
+                  />
+                </div>
               </li>
             ))}
           </ul>
