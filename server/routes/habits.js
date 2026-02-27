@@ -71,6 +71,23 @@ router.post("/", async (req, res) => {
   }
 });
 
+// PATCH /api/habits/:id — update habit name
+router.patch("/:id", async (req, res) => {
+  try {
+    const habit = await Habit.findOne({ _id: req.params.id, userId: req.userId });
+    if (!habit) return res.status(404).json({ message: "Habit not found." });
+    const { name } = req.body;
+    if (!name || typeof name !== "string" || !name.trim()) {
+      return res.status(400).json({ message: "Name is required." });
+    }
+    habit.name = name.trim();
+    await habit.save();
+    return res.json({ habit: habit.toObject() });
+  } catch (err) {
+    return res.status(500).json({ message: err.message || "Server error" });
+  }
+});
+
 // POST /api/habits/:id/complete — mark habit done for today (idempotent)
 router.post("/:id/complete", async (req, res) => {
   try {

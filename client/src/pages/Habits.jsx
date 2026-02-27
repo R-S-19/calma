@@ -12,6 +12,8 @@ export default function Habits() {
   const [newName, setNewName] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editingName, setEditingName] = useState("");
   const [viewMonth, setViewMonth] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
@@ -98,6 +100,35 @@ export default function Habits() {
         }
       })
       .catch(() => setError("Could not update habit"));
+  }
+
+  function handleEditName(habit) {
+    setEditingId(habit._id);
+    setEditingName(habit.name);
+  }
+
+  function handleSaveName(id) {
+    const trimmed = editingName.trim();
+    if (!trimmed) {
+      setEditingId(null);
+      return;
+    }
+    fetch(`${API_URL}/api/habits/${id}`, {
+      method: "PATCH",
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({ name: trimmed }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to update");
+        return res.json();
+      })
+      .then((data) => {
+        setHabits((prev) =>
+          prev.map((h) => (h._id === data.habit._id ? { ...h, name: data.habit.name } : h))
+        );
+        setEditingId(null);
+      })
+      .catch(() => setError("Could not update habit name"));
   }
 
   function handleDelete(id) {
@@ -208,11 +239,28 @@ export default function Habits() {
                   >
                     {habit.completedToday && "✓"}
                   </button>
-                  <span
-                    className={`flex-1 ${habit.completedToday ? "text-white/50 line-through" : "text-white font-medium"}`}
-                  >
-                    {habit.name}
-                  </span>
+                  {editingId === habit._id ? (
+                    <input
+                      type="text"
+                      value={editingName}
+                      onChange={(e) => setEditingName(e.target.value)}
+                      onBlur={() => handleSaveName(habit._id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSaveName(habit._id);
+                        if (e.key === "Escape") setEditingId(null);
+                      }}
+                      autoFocus
+                      className="flex-1 bg-white/5 border border-white/20 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-amber-400/40"
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleEditName(habit)}
+                      className={`flex-1 text-left ${habit.completedToday ? "text-white/50 line-through" : "text-white font-medium"} hover:text-amber-400/80 transition-colors`}
+                    >
+                      {habit.name}
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={() => handleDelete(habit._id)}
