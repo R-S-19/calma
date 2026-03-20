@@ -1,7 +1,6 @@
 const express = require("express");
 const Habit = require("../models/Habit");
 const Completion = require("../models/Completion");
-const growthService = require("../services/growthService");
 
 const router = express.Router();
 
@@ -95,17 +94,14 @@ router.post("/:id/complete", async (req, res) => {
     if (!habit) return res.status(404).json({ message: "Habit not found." });
     const today = todayString();
     let completion = await Completion.findOne({ habitId: habit._id, date: today });
-    let leveledUpTraits = [];
     if (!completion) {
       completion = await Completion.create({
         habitId: habit._id,
         userId: req.userId,
         date: today,
       });
-      const result = await growthService.applyAction(req.userId, "HABIT_7_DAY_STREAK", { habitId: habit._id });
-      leveledUpTraits = result.leveledUpTraits || [];
     }
-    return res.json({ completed: true, completion, leveledUpTraits });
+    return res.json({ completed: true, completion });
   } catch (err) {
     return res.status(500).json({ message: err.message || "Server error" });
   }

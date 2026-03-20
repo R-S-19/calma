@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { API_URL } from "../lib/api";
 import { getToken, removeToken } from "../lib/auth";
 import Layout from "../components/Layout";
-import GrowthPanel from "../components/growth/GrowthPanel";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -109,10 +108,6 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-
-        <div className="max-w-md">
-          <GrowthPanel />
-        </div>
       </div>
     </Layout>
   )

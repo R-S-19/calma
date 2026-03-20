@@ -1,6 +1,5 @@
 const express = require("express");
 const Task = require("../models/Task");
-const growthService = require("../services/growthService");
 
 const router = express.Router();
 
@@ -81,12 +80,7 @@ router.patch("/:id", async (req, res) => {
     task.completed = !task.completed;
     task.completedAt = task.completed ? new Date() : null;
     await task.save();
-    let leveledUpTraits = [];
-    if (!wasCompleted && task.completed) {
-      const result = await growthService.applyAction(req.userId, "TASK_COMPLETE", {});
-      leveledUpTraits = result.leveledUpTraits || [];
-    }
-    return res.json({ task, leveledUpTraits });
+    return res.json({ task });
   } catch (err) {
     return res.status(500).json({ message: err.message || "Server error" });
   }

@@ -6,8 +6,8 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const taskRoutes = require("./routes/tasks");
 const habitRoutes = require("./routes/habits");
-const growthRoutes = require("./routes/growth");
 const dashboardRoutes = require("./routes/dashboard");
+const focusRoutes = require("./routes/focus");
 const requireAuth = require("./middleware/requireAuth");
 const User = require("./models/User");
 
@@ -21,8 +21,8 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", requireAuth, taskRoutes);
 app.use("/api/habits", requireAuth, habitRoutes);
-app.use("/api/growth", requireAuth, growthRoutes);
 app.use("/api/dashboard", requireAuth, dashboardRoutes);
+app.use("/api/focus", requireAuth, focusRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

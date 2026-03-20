@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { API_URL } from "../lib/api";
 import { getToken } from "../lib/auth";
-import { useLevelUpToast } from "./LevelUpToastContext";
 
 const FocusTimerContext = createContext(null);
 
@@ -10,8 +9,6 @@ export function FocusTimerProvider({ children }) {
   const [isRunning, setIsRunning] = useState(false);
   const [timesUp, setTimesUp] = useState(false);
   const hasReportedSession = useRef(false);
-  const { showLevelUp } = useLevelUpToast();
-
   useEffect(() => {
     if (!isRunning || timeRemaining <= 0) return;
     const id = setInterval(() => {
@@ -32,18 +29,13 @@ export function FocusTimerProvider({ children }) {
     hasReportedSession.current = true;
     const token = getToken();
     if (token) {
-      fetch(`${API_URL}/api/growth/apply-action`, {
+      fetch(`${API_URL}/api/focus/session`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ actionType: "FOCUS_SESSION_COMPLETE" }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data?.leveledUpTraits?.length) showLevelUp(data.leveledUpTraits);
-        })
-        .catch(() => {});
+        body: JSON.stringify({}),
+      }).catch(() => {});
     }
-  }, [timesUp, showLevelUp]);
+  }, [timesUp]);
 
   function start() {
     setTimesUp(false);

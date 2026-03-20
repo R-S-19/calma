@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import { API_URL } from "../lib/api";
 import { getToken } from "../lib/auth";
-import { useLevelUpToast } from "../context/LevelUpToastContext";
 import Layout from "../components/Layout";
 import HabitActivityGrid from "../components/habits/HabitActivityGrid";
 
 export default function Habits() {
   const [habits, setHabits] = useState([]);
-  const { showLevelUp } = useLevelUpToast();
   const [loading, setLoading] = useState(true);
   const [newName, setNewName] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -84,7 +82,6 @@ export default function Habits() {
                 : h
             )
           );
-          if (data?.leveledUpTraits?.length) showLevelUp(data.leveledUpTraits);
         } else {
           setHabits((prev) =>
             prev.map((h) =>
