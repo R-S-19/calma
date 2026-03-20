@@ -4,3 +4,33 @@ body {
   margin: 0;
   min-height: 100vh;
 }
+
+/* Replace default focus outline (black square) with a subtle amber ring */
+button:focus,
+header a:focus {
+  outline: none;
+}
+
+button:focus-visible,
+header a:focus-visible {
+  outline: 2px solid rgba(251, 191, 36, 0.5);
+  outline-offset: 2px;
+}
+
+/* Prevent black background/outline on header nav links */
+header nav a {
+  background-color: transparent !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+header nav a:focus,
+header nav a:active,
+header nav a:focus-visible {
+  background-color: transparent !important;
+}
+
+/* Override Firefox focus ring (can render as black box) */
+header nav a:-moz-focusring {
+  outline: 2px solid rgba(251, 191, 36, 0.5);
+  outline-offset: 2px;
+}

@@ -9,8 +9,8 @@ function NavLink({ to, children, current }) {
       to={to}
       className={
         isActive
-          ? "text-white border-b-2 border-amber-400/80 pb-0.5 shadow-[0_0_12px_rgba(212,165,116,0.3)]"
-          : "text-white/60 hover:text-white/80"
+          ? "bg-transparent text-white border-b-2 border-amber-400/80 pb-0.5"
+          : "bg-transparent text-white/60 hover:text-white/80"
       }
     >
       {children}
@@ -60,7 +60,7 @@ export default function Layout({ children }) {
         <button
           type="button"
           onClick={handleLogout}
-          className="text-sm text-white/60 hover:text-white/80"
+          className="text-sm text-white/60 hover:text-white/80 bg-transparent border-0 cursor-pointer"
         >
           Log out
         </button>
