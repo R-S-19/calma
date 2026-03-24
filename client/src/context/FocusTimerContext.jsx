@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { API_URL } from "../lib/api";
 import { getToken } from "../lib/auth";
+import { playFocusCompleteSound, primeFocusAudioContext } from "../lib/focusSound";
 
 const FocusTimerContext = createContext(null);
 
@@ -27,6 +28,7 @@ export function FocusTimerProvider({ children }) {
   useEffect(() => {
     if (!timesUp || hasReportedSession.current) return;
     hasReportedSession.current = true;
+    playFocusCompleteSound();
     const token = getToken();
     if (token) {
       fetch(`${API_URL}/api/focus/session`, {
@@ -38,15 +40,18 @@ export function FocusTimerProvider({ children }) {
   }, [timesUp]);
 
   function start() {
+    primeFocusAudioContext();
     setTimesUp(false);
     setIsRunning(true);
   }
 
   function pause() {
+    primeFocusAudioContext();
     setIsRunning(false);
   }
 
   function reset() {
+    primeFocusAudioContext();
     hasReportedSession.current = false;
     setIsRunning(false);
     setTimesUp(false);
@@ -55,6 +60,7 @@ export function FocusTimerProvider({ children }) {
 
   function selectPreset(seconds) {
     if (!isRunning) {
+      primeFocusAudioContext();
       setTimeRemaining(seconds);
       setTimesUp(false);
     }
