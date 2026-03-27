@@ -9,6 +9,37 @@ const PRIORITIES = [
   { value: "low", label: "Low", badge: "bg-emerald-500/20 text-emerald-400", order: 2 },
 ];
 
+/** Calendar Y-M-D from a due date (date-only; avoids UTC midnight shifting the day). */
+function dueDateParts(dateStr) {
+  if (!dateStr) return null;
+  const head = String(dateStr).slice(0, 10);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(head)) {
+    const [y, mo, d] = head.split("-").map(Number);
+    return { y, m: mo - 1, d };
+  }
+  const dt = new Date(dateStr);
+  if (Number.isNaN(dt.getTime())) return null;
+  return { y: dt.getUTCFullYear(), m: dt.getUTCMonth(), d: dt.getUTCDate() };
+}
+
+function todayYmd() {
+  const now = new Date();
+  return { y: now.getFullYear(), m: now.getMonth(), d: now.getDate() };
+}
+
+function ymdCompare(a, b) {
+  if (a.y !== b.y) return a.y - b.y;
+  if (a.m !== b.m) return a.m - b.m;
+  return a.d - b.d;
+}
+
+function calendarDayDiff(due, today) {
+  const u0 = Date.UTC(due.y, due.m, due.d);
+  const u1 = Date.UTC(today.y, today.m, today.d);
+  return Math.round((u0 - u1) / (24 * 60 * 60 * 1000));
+}
+
+/** For createdAt / completedAt (real instants — use local time). */
 function formatDate(dateStr) {
   if (!dateStr) return "";
   const d = new Date(dateStr);
@@ -32,23 +63,38 @@ function formatDate(dateStr) {
   });
 }
 
+function formatDueDateRelativeLabel(dateStr) {
+  const due = dueDateParts(dateStr);
+  if (!due) return "";
+  const today = todayYmd();
+  if (ymdCompare(due, today) === 0) return "Today";
+  const prev = new Date(today.y, today.m, today.d);
+  prev.setDate(prev.getDate() - 1);
+  const yest = { y: prev.getFullYear(), m: prev.getMonth(), d: prev.getDate() };
+  if (ymdCompare(due, yest) === 0) return "Yesterday";
+  const sameYear = due.y === today.y;
+  return new Date(due.y, due.m, due.d).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    ...(sameYear ? {} : { year: "numeric" }),
+  });
+}
+
 function formatDueDate(dateStr) {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  d.setHours(0, 0, 0, 0);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const diff = Math.floor((d - today) / (24 * 60 * 60 * 1000));
-  if (diff < 0) return `Overdue (${formatDate(dateStr)})`;
+  const due = dueDateParts(dateStr);
+  if (!due) return "";
+  const today = todayYmd();
+  const diff = calendarDayDiff(due, today);
+  if (diff < 0) return `Overdue (${formatDueDateRelativeLabel(dateStr)})`;
   if (diff === 0) return "Due today";
   if (diff === 1) return "Due tomorrow";
-  return `Due ${formatDate(dateStr)}`;
+  return `Due ${formatDueDateRelativeLabel(dateStr)}`;
 }
 
 function toDateInputValue(dateStr) {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return d.toISOString().slice(0, 10);
+  const due = dueDateParts(dateStr);
+  if (!due) return "";
+  return `${due.y}-${String(due.m + 1).padStart(2, "0")}-${String(due.d).padStart(2, "0")}`;
 }
 
 function CalendarIcon({ className }) {
