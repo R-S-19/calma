@@ -72,9 +72,15 @@ export default function Dashboard() {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [summaryFailed, setSummaryFailed] = useState(false);
+  const [clock, setClock] = useState(() => new Date());
   const navigate = useNavigate();
   const token = getToken();
   const headers = { Authorization: `Bearer ${token}` };
+
+  useEffect(() => {
+    const id = setInterval(() => setClock(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     if (!token) {
@@ -126,9 +132,21 @@ export default function Dashboard() {
     <Layout>
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
-          <p className="text-xs font-medium uppercase tracking-wider text-white/40 mb-2">
-            {formatTodayLong()}
-          </p>
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-2">
+            <p className="text-xs font-medium uppercase tracking-wider text-white/40">
+              {formatTodayLong()}
+            </p>
+            <time
+              dateTime={clock.toISOString()}
+              className="text-sm font-mono tabular-nums text-white/55"
+            >
+              {clock.toLocaleTimeString(undefined, {
+                hour: "numeric",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            </time>
+          </div>
           <h2 className="text-2xl font-semibold text-white mb-1">{getGreeting()}</h2>
           <p className="text-sm text-white/60">Signed in as {user?.email}</p>
         </div>
