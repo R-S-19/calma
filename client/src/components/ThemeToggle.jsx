@@ -1,27 +1,22 @@
 import { useTheme } from "../context/ThemeContext";
 
-const labels = {
-  system: "System",
-  light: "Light",
-  dark: "Dark",
-};
-
 export default function ThemeToggle({ className = "" }) {
-  const { theme, setTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
+  const dark = theme === "dark";
 
   return (
-    <label className={`inline-flex items-center gap-2 ${className}`}>
-      <span className="sr-only">Color theme</span>
-      <select
-        value={theme}
-        onChange={(e) => setTheme(e.target.value)}
-        className="rounded-lg border border-[var(--app-border)] bg-[var(--app-surface)] px-2.5 py-1.5 text-xs font-medium text-app-muted hover:bg-[var(--app-surface-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--app-ring)] cursor-pointer"
-        aria-label="Color theme: use system, light, or dark"
-      >
-        <option value="system">{labels.system}</option>
-        <option value="light">{labels.light}</option>
-        <option value="dark">{labels.dark}</option>
-      </select>
-    </label>
+    <button
+      type="button"
+      role="switch"
+      aria-checked={dark}
+      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+      onClick={toggleTheme}
+      className={`relative inline-flex h-7 w-11 shrink-0 cursor-pointer items-center rounded-full border border-app p-0.5 transition-colors hover:bg-[var(--app-surface-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--app-ring)] ${className}`}
+    >
+      <span
+        className={`block h-5 w-5 rounded-full bg-amber-600 shadow-sm transition-all dark:bg-amber-500 ${dark ? "ml-auto" : ""}`}
+        aria-hidden
+      />
+    </button>
   );
 }
