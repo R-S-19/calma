@@ -44,17 +44,17 @@ export default function HabitActivityGrid({ completionDates = [], month, year, h
   const monthName = new Date(year, month - 1).toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
   return (
-    <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+    <div className="rounded-lg border border-app bg-app-surface-2 p-3">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-white/60 font-medium truncate max-w-[120px]" title={habitName}>
+        <span className="text-xs text-app-muted font-medium truncate max-w-[120px]" title={habitName}>
           {habitName}
         </span>
-        <span className="text-xs text-white/40">{monthName}</span>
+        <span className="text-xs text-app-subtle">{monthName}</span>
       </div>
       <div className="flex flex-col gap-1">
         <div className="flex gap-1 justify-center">
           {DAY_LABELS.map((label) => (
-            <span key={label} className="w-3 text-center text-[9px] text-white/40 flex-shrink-0">
+            <span key={label} className="w-3 text-center text-[9px] text-app-subtle flex-shrink-0">
               {label.slice(0, 1)}
             </span>
           ))}
@@ -67,7 +67,7 @@ export default function HabitActivityGrid({ completionDates = [], month, year, h
                   return (
                     <div
                       key={`${wi}-${di}-empty`}
-                      className="w-3 h-3 rounded-sm bg-white/5 flex-shrink-0"
+                      className="w-3 h-3 rounded-sm bg-[var(--app-surface-2)] flex-shrink-0 border border-transparent dark:border-white/5"
                       aria-hidden
                     />
                   );
@@ -80,14 +80,14 @@ export default function HabitActivityGrid({ completionDates = [], month, year, h
                     key={cell.date}
                     className={`w-3 h-3 rounded-sm flex-shrink-0 transition-colors ${
                       future
-                        ? "bg-white/5"
+                        ? "bg-slate-200/50 dark:bg-white/5"
                         : completed
                           ? isHovered
-                            ? "bg-amber-400"
-                            : "bg-amber-500/70"
+                            ? "bg-amber-500 dark:bg-amber-400"
+                            : "bg-amber-500/70 dark:bg-amber-500/70"
                           : isHovered
-                            ? "bg-white/20"
-                            : "bg-white/10"
+                            ? "bg-slate-400/50 dark:bg-white/25"
+                            : "bg-slate-300/80 dark:bg-white/10"
                     }`}
                     title={`${cell.date}${completed ? " - Done" : future ? " - Future" : " - Not done"}`}
                     onMouseEnter={() => setHovered(cell.date)}
@@ -100,8 +100,8 @@ export default function HabitActivityGrid({ completionDates = [], month, year, h
           ))}
         </div>
       </div>
-      <div className="flex items-center gap-2 mt-2 text-[10px] text-white/40">
-        <div className="w-3 h-3 rounded-sm bg-white/10" />
+      <div className="flex items-center gap-2 mt-2 text-[10px] text-app-subtle">
+        <div className="w-3 h-3 rounded-sm bg-slate-300/80 dark:bg-white/10" />
         <span>Not done</span>
         <div className="w-3 h-3 rounded-sm bg-amber-500/70" />
         <span>Done</span>

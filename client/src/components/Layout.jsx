@@ -1,6 +1,7 @@
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { removeToken } from "../lib/auth";
 import { useFocusTimer } from "../context/FocusTimerContext";
+import ThemeToggle from "./ThemeToggle";
 
 function NavLink({ to, children, current }) {
   const isActive = current;
@@ -9,8 +10,8 @@ function NavLink({ to, children, current }) {
       to={to}
       className={
         isActive
-          ? "bg-transparent text-white border-b-2 border-amber-400/80 pb-0.5"
-          : "bg-transparent text-white/60 hover:text-white/80"
+          ? "bg-transparent text-app border-b-2 border-amber-600/80 dark:border-amber-400/80 pb-0.5"
+          : "bg-transparent text-app-muted hover:text-app-secondary"
       }
     >
       {children}
@@ -29,14 +30,14 @@ export default function Layout({ children }) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#0F1219] via-[#16191F] to-[#0D1014]">
-      <header className="px-4 py-3 flex justify-between items-center bg-transparent border-b border-white/10">
-        <div className="flex items-center gap-4">
-          <h1 className="text-xl font-semibold text-white/80">Calma</h1>
+    <div className="min-h-screen flex flex-col app-gradient-bg">
+      <header className="px-4 py-3 flex justify-between items-center bg-transparent border-b border-app">
+        <div className="flex items-center gap-4 flex-wrap">
+          <h1 className="text-xl font-semibold text-app-secondary">Calma</h1>
           {isRunning && (
             <Link
               to="/focus"
-              className="flex items-center gap-1.5 px-2 py-1 rounded text-sm font-medium bg-amber-500/20 text-amber-400"
+              className="flex items-center gap-1.5 px-2 py-1 rounded text-sm font-medium bg-amber-500/20 text-amber-800 dark:text-amber-400"
             >
               <span className="animate-pulse">●</span>
               {formatTime(timeRemaining)}
@@ -57,17 +58,20 @@ export default function Layout({ children }) {
             </NavLink>
           </nav>
         </div>
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="text-sm text-white/60 hover:text-white/80 bg-transparent border-0 cursor-pointer"
-        >
-          Log out
-        </button>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="text-sm text-app-muted hover:text-app-secondary bg-transparent border-0 cursor-pointer"
+          >
+            Log out
+          </button>
+        </div>
       </header>
       <main className={`flex-1 ${location.pathname === "/tasks" ? "p-0" : "p-4"}`}>
         {children}
       </main>
     </div>
-  )
+  );
 }

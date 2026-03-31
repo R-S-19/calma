@@ -4,10 +4,12 @@ import { getToken } from "../lib/auth";
 import Layout from "../components/Layout";
 
 const PRIORITIES = [
-  { value: "high", label: "High", badge: "bg-amber-500/20 text-amber-400", order: 0 },
-  { value: "normal", label: "Normal", badge: "bg-white/10 text-white/70", order: 1 },
-  { value: "low", label: "Low", badge: "bg-emerald-500/20 text-emerald-400", order: 2 },
+  { value: "high", label: "High", badge: "bg-amber-500/20 text-amber-800 dark:text-amber-400", order: 0 },
+  { value: "normal", label: "Normal", badge: "bg-slate-200/90 text-slate-700 dark:bg-white/10 dark:text-white/70", order: 1 },
+  { value: "low", label: "Low", badge: "bg-emerald-500/20 text-emerald-800 dark:text-emerald-400", order: 2 },
 ];
+const PRIORITY_FALLBACK_BADGE =
+  "bg-slate-200/90 text-slate-700 dark:bg-white/10 dark:text-white/70";
 
 /** Calendar Y-M-D from a due date (date-only; avoids UTC midnight shifting the day). */
 function dueDateParts(dateStr) {
@@ -312,20 +314,15 @@ export default function Tasks() {
   return (
     <Layout>
       <div className="min-h-screen relative overflow-hidden">
-        <div
-          className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,165,116,0.12),transparent_60%)] blur-3xl opacity-50 pointer-events-none"
-          aria-hidden
-        />
+        <div className="absolute inset-0 app-radial-glow blur-3xl opacity-50 pointer-events-none" aria-hidden />
 
         <div className="relative flex flex-col items-center px-4 py-12 md:py-16 max-w-3xl mx-auto">
           <header className="text-center mb-10">
-            <h2 className="text-4xl font-semibold tracking-tight text-white">
-              Tasks
-            </h2>
-            <p className="text-white/60 mt-2">One thing at a time.</p>
+            <h2 className="text-4xl font-semibold tracking-tight text-app">Tasks</h2>
+            <p className="text-app-muted mt-2">One thing at a time.</p>
           </header>
 
-          <div className="w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_0_40px_rgba(212,165,116,0.06)] p-6 md:p-8">
+          <div className="w-full bg-app-surface backdrop-blur-xl border border-app rounded-2xl shadow-app-timer p-6 md:p-8">
             <form onSubmit={handleAdd} className="space-y-3 mb-6">
               <div className="flex flex-col sm:flex-row gap-3">
                 <input
@@ -333,24 +330,28 @@ export default function Tasks() {
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   placeholder="What do you need to do?"
-                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-transparent transition-all"
+                  className="flex-1 bg-app-input border border-app rounded-xl px-4 py-3 text-app placeholder:text-[var(--app-placeholder)] focus:outline-none focus:ring-2 focus:ring-[var(--app-ring)] focus:border-transparent transition-all"
                   disabled={submitting}
                 />
                 <input
                   type="date"
                   value={newDueDate}
                   onChange={(e) => setNewDueDate(e.target.value)}
-                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/90 focus:outline-none focus:ring-2 focus:ring-amber-400/40 sm:w-40 [color-scheme:dark]"
+                  className="bg-app-input border border-app rounded-xl px-4 py-3 text-app-secondary focus:outline-none focus:ring-2 focus:ring-[var(--app-ring)] sm:w-40"
                   disabled={submitting}
                 />
                 <select
                   value={newPriority}
                   onChange={(e) => setNewPriority(e.target.value)}
-                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/90 focus:outline-none focus:ring-2 focus:ring-amber-400/40 sm:w-28"
+                  className="bg-app-input border border-app rounded-xl px-4 py-3 text-app-secondary focus:outline-none focus:ring-2 focus:ring-[var(--app-ring)] sm:w-28"
                   disabled={submitting}
                 >
                   {PRIORITIES.map((p) => (
-                    <option key={p.value} value={p.value} className="bg-[#0F1219] text-white">
+                    <option
+                      key={p.value}
+                      value={p.value}
+                      className="bg-[var(--app-select-option-bg)] text-[var(--app-select-option-text)]"
+                    >
                       {p.label}
                     </option>
                   ))}
@@ -368,23 +369,23 @@ export default function Tasks() {
                 onChange={(e) => setNewNotes(e.target.value)}
                 placeholder="Notes (optional)"
                 rows={2}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-transparent transition-all resize-none"
+                className="w-full bg-app-input border border-app rounded-xl px-4 py-3 text-app placeholder:text-[var(--app-placeholder)] focus:outline-none focus:ring-2 focus:ring-[var(--app-ring)] focus:border-transparent transition-all resize-none"
                 disabled={submitting}
               />
             </form>
 
             {error && (
-              <p className="text-amber-400 text-sm bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 mb-6">
+              <p className="text-amber-700 dark:text-amber-400 text-sm bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 mb-6">
                 {error}
               </p>
             )}
 
             {loading ? (
-              <p className="text-white/50 py-8 text-center">Loading tasks…</p>
+              <p className="text-app-muted py-8 text-center">Loading tasks…</p>
             ) : tasks.length === 0 ? (
               <div className="py-12 text-center">
-                <p className="text-white/60 text-lg mb-2">Nothing on your list yet.</p>
-                <p className="text-white/40 text-sm">
+                <p className="text-app-muted text-lg mb-2">Nothing on your list yet.</p>
+                <p className="text-app-subtle text-sm">
                   Add a task above when you're ready. One step at a time.
                 </p>
               </div>
@@ -392,22 +393,22 @@ export default function Tasks() {
               <>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <CalendarIcon className="text-white/50 w-4 h-4" />
-                    <span className="text-white font-medium">Today</span>
+                    <CalendarIcon className="text-app-muted w-4 h-4" />
+                    <span className="text-app font-medium">Today</span>
                   </div>
-                  <span className="text-white/50 text-sm">
+                  <span className="text-app-muted text-sm">
                     {incomplete.length} task{incomplete.length !== 1 ? "s" : ""}
                   </span>
                 </div>
 
-                <div className="border-t border-white/10 my-6" />
+                <div className="border-t border-app my-6" />
 
                 <ul className="space-y-3">
                   {incomplete.map((task, index) => (
                     <li
                       key={task._id}
-                      className={`group flex justify-between items-center p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all ${
-                        index === 0 ? "border-l-4 border-l-amber-400/80 shadow-[0_0_20px_rgba(212,165,116,0.08)]" : ""
+                      className={`group flex justify-between items-center p-4 rounded-xl border border-app bg-app-surface-2 hover:bg-[var(--app-surface-hover)] transition-all ${
+                        index === 0 ? "border-l-4 border-l-amber-500/80 dark:border-l-amber-400/80 shadow-app-card-mission" : ""
                       }`}
                     >
                       <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -415,34 +416,36 @@ export default function Tasks() {
                           type="checkbox"
                           checked={false}
                           onChange={() => handleToggle(task._id)}
-                          className="rounded border-white/30 bg-white/5 w-5 h-5 text-amber-500 focus:ring-amber-400/40 focus:ring-offset-0 accent-amber-500"
+                          className="rounded border-[var(--app-checkbox-border)] bg-app-input w-5 h-5 text-amber-600 dark:text-amber-500 focus:ring-[var(--app-ring)] focus:ring-offset-0 accent-amber-600 dark:accent-amber-500"
                         />
                         <span
                           className={`px-2 py-1 rounded-md text-xs font-medium ${
-                            PRIORITIES.find((p) => p.value === (task.priority || "normal"))?.badge ?? "bg-white/10 text-white/70"
+                            PRIORITIES.find((p) => p.value === (task.priority || "normal"))?.badge ?? PRIORITY_FALLBACK_BADGE
                           }`}
                         >
                           {PRIORITIES.find((p) => p.value === (task.priority || "normal"))?.label ?? "Normal"}
                         </span>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-white font-medium">{task.title}</span>
+                            <span className="text-app font-medium">{task.title}</span>
                             {index === 0 && (
-                              <span className="text-amber-400/90 text-xs font-medium">Today's Mission</span>
+                              <span className="text-amber-700 dark:text-amber-400/90 text-xs font-medium">
+                                Today's Mission
+                              </span>
                             )}
                             {task.dueDate && (
                               <span
                                 className={`text-xs px-2 py-0.5 rounded ${
                                   new Date(task.dueDate).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)
-                                    ? "bg-amber-500/30 text-amber-400"
-                                    : "bg-white/10 text-white/60"
+                                    ? "bg-amber-500/25 text-amber-800 dark:text-amber-400"
+                                    : "bg-slate-200/80 text-slate-700 dark:bg-white/10 dark:text-white/60"
                                 }`}
                               >
                                 {formatDueDate(task.dueDate)}
                               </span>
                             )}
                           </div>
-                          <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-1 text-xs text-white/40">
+                          <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-1 text-xs text-app-subtle">
                             {task.createdAt && (
                               <span>Added {formatDate(task.createdAt)}</span>
                             )}
@@ -467,13 +470,13 @@ export default function Tasks() {
                                       if (e.key === "Escape") setEditingDueDate(null);
                                     }}
                                     autoFocus
-                                    className="bg-white/10 border border-white/20 rounded px-1 py-0.5 text-white/80 text-xs [color-scheme:dark]"
+                                    className="bg-app-input border border-app-strong rounded px-1 py-0.5 text-app-secondary text-xs"
                                   />
                                 ) : (
                                   <button
                                     type="button"
                                     onClick={() => setEditingDueDate(task._id)}
-                                    className="text-left hover:text-white/60"
+                                    className="text-left hover:text-app-muted"
                                   >
                                     {formatDueDate(task.dueDate)}
                                   </button>
@@ -485,7 +488,7 @@ export default function Tasks() {
                                 <button
                                   type="button"
                                   onClick={() => setEditingDueDate(task._id)}
-                                  className="text-white/30 hover:text-white/50"
+                                  className="text-app-faint hover:text-app-subtle"
                                 >
                                   Add date
                                 </button>
@@ -502,22 +505,22 @@ export default function Tasks() {
                                 }}
                                 autoFocus
                                 rows={2}
-                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-amber-400/40 resize-none"
+                                className="w-full bg-app-input border border-app rounded-lg px-3 py-2 text-sm text-app placeholder:text-[var(--app-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--app-ring)] resize-none"
                               />
                             </div>
                           ) : task.notes ? (
                             <p
-                              className="text-white/50 text-sm mt-1 cursor-pointer hover:text-white/70 flex items-start gap-1"
+                              className="text-app-muted text-sm mt-1 cursor-pointer hover:text-app-secondary flex items-start gap-1"
                               onClick={() => setEditingNotes(task._id)}
                             >
-                              <NotesIcon className="flex-shrink-0 mt-0.5 text-white/40" />
+                              <NotesIcon className="flex-shrink-0 mt-0.5 text-app-subtle" />
                               <span className="line-clamp-2">{task.notes}</span>
                             </p>
                           ) : (
                             <button
                               type="button"
                               onClick={() => setEditingNotes(task._id)}
-                              className="text-white/30 hover:text-white/50 text-xs mt-1 flex items-center gap-1 transition-colors"
+                              className="text-app-faint hover:text-app-subtle text-xs mt-1 flex items-center gap-1 transition-colors"
                             >
                               <NotesIcon className="w-3.5 h-3.5" />
                               Add notes
@@ -529,11 +532,15 @@ export default function Tasks() {
                         <select
                           value={task.priority || "normal"}
                           onChange={(e) => handlePriorityChange(task._id, e.target.value)}
-                          className="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-white/70 focus:outline-none focus:ring-1 focus:ring-amber-400/40 opacity-60 group-hover:opacity-100 transition-opacity"
+                          className="bg-app-input border border-app rounded-lg px-2 py-1 text-xs text-app-muted focus:outline-none focus:ring-1 focus:ring-[var(--app-ring)] opacity-60 group-hover:opacity-100 transition-opacity"
                           aria-label="Change priority"
                         >
                           {PRIORITIES.map((p) => (
-                            <option key={p.value} value={p.value} className="bg-[#0F1219]">
+                            <option
+                              key={p.value}
+                              value={p.value}
+                              className="bg-[var(--app-select-option-bg)] text-[var(--app-select-option-text)]"
+                            >
                               {p.label}
                             </option>
                           ))}
@@ -541,7 +548,7 @@ export default function Tasks() {
                         <button
                           type="button"
                           onClick={() => handleDelete(task._id)}
-                          className="p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/10 transition-all opacity-60 group-hover:opacity-100"
+                          className="p-2 text-app-muted hover:text-app rounded-lg hover:bg-[var(--app-surface-hover)] transition-all opacity-60 group-hover:opacity-100"
                           aria-label="Delete task"
                         >
                           <TrashIcon />
@@ -552,11 +559,11 @@ export default function Tasks() {
                 </ul>
 
                 {completed.length > 0 && (
-                  <div className="mt-8 pt-6 border-t border-white/10">
+                  <div className="mt-8 pt-6 border-t border-app">
                     <button
                       type="button"
                       onClick={() => setShowCompleted(!showCompleted)}
-                      className="text-sm text-white/60 hover:text-white/80 mb-4 flex items-center gap-1 transition-colors"
+                      className="text-sm text-app-muted hover:text-app-secondary mb-4 flex items-center gap-1 transition-colors"
                     >
                       {showCompleted ? "▲" : "▼"} {completed.length} completed
                     </button>
@@ -565,25 +572,25 @@ export default function Tasks() {
                         {completed.map((task) => (
                           <li
                             key={task._id}
-                            className="group flex justify-between items-center p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all"
+                            className="group flex justify-between items-center p-4 rounded-xl border border-app bg-app-surface-2 hover:bg-[var(--app-surface-hover)] transition-all"
                           >
                             <div className="flex items-center gap-3 flex-1 min-w-0">
                               <input
                                 type="checkbox"
                                 checked
                                 onChange={() => handleToggle(task._id)}
-                                className="rounded border-white/30 bg-white/5 w-5 h-5 text-amber-500 focus:ring-amber-400/40 focus:ring-offset-0 accent-amber-500"
+                                className="rounded border-[var(--app-checkbox-border)] bg-app-input w-5 h-5 text-amber-600 dark:text-amber-500 focus:ring-[var(--app-ring)] focus:ring-offset-0 accent-amber-600 dark:accent-amber-500"
                               />
                               <span
                                 className={`px-2 py-1 rounded-md text-xs ${
-                                  PRIORITIES.find((p) => p.value === (task.priority || "normal"))?.badge ?? "bg-white/10 text-white/70"
+                                  PRIORITIES.find((p) => p.value === (task.priority || "normal"))?.badge ?? PRIORITY_FALLBACK_BADGE
                                 }`}
                               >
                                 {PRIORITIES.find((p) => p.value === (task.priority || "normal"))?.label ?? "Normal"}
                               </span>
                               <div className="flex-1 min-w-0">
-                                <span className="text-white/50 line-through text-sm block">{task.title}</span>
-                                <div className="flex items-center gap-2 mt-0.5 text-xs text-white/40 flex-wrap">
+                                <span className="text-app-muted line-through text-sm block">{task.title}</span>
+                                <div className="flex items-center gap-2 mt-0.5 text-xs text-app-subtle flex-wrap">
                                   {task.completedAt && (
                                     <span>Completed {formatDate(task.completedAt)}</span>
                                   )}
@@ -601,7 +608,7 @@ export default function Tasks() {
                                   )}
                                 </div>
                                 {task.notes && (
-                                  <p className="text-white/40 text-xs mt-1 flex items-start gap-1">
+                                  <p className="text-app-subtle text-xs mt-1 flex items-start gap-1">
                                     <NotesIcon className="flex-shrink-0 mt-0.5" />
                                     <span className="line-clamp-2">{task.notes}</span>
                                   </p>
@@ -611,7 +618,7 @@ export default function Tasks() {
                             <button
                               type="button"
                               onClick={() => handleDelete(task._id)}
-                              className="p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/10 transition-all opacity-60 group-hover:opacity-100"
+                              className="p-2 text-app-muted hover:text-app rounded-lg hover:bg-[var(--app-surface-hover)] transition-all opacity-60 group-hover:opacity-100"
                               aria-label="Delete task"
                             >
                               <TrashIcon />
@@ -627,13 +634,13 @@ export default function Tasks() {
                   <button
                     type="button"
                     onClick={handleClearCompleted}
-                    className="w-full mt-6 flex items-center justify-between gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/70 hover:bg-white/10 hover:text-white/90 transition-all"
+                    className="w-full mt-6 flex items-center justify-between gap-3 bg-app-surface-2 border border-app rounded-xl px-4 py-3 text-app-muted hover:bg-[var(--app-surface-hover)] hover:text-app-secondary transition-all"
                   >
                     <div className="flex items-center gap-2">
-                      <CheckIcon className="text-white/50" />
+                      <CheckIcon className="text-app-muted" />
                       <span>Clear completed</span>
                     </div>
-                    <span className="text-white/50 text-sm">
+                    <span className="text-app-muted text-sm">
                       {completed.length} task{completed.length !== 1 ? "s" : ""}
                     </span>
                   </button>

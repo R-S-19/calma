@@ -22,7 +22,7 @@ export default function Focus() {
   return (
     <Layout>
       <div className="max-w-3xl mx-auto">
-        <h2 className="text-2xl font-semibold text-white mb-6">Focus timer</h2>
+        <h2 className="text-2xl font-semibold text-app mb-6">Focus timer</h2>
 
         <div className="flex gap-2 mb-8">
           {PRESETS.map((p) => (
@@ -34,7 +34,7 @@ export default function Focus() {
               className={`px-4 py-2 rounded-xl text-sm transition-all ${
                 timeRemaining === p.seconds && !isRunning
                   ? "bg-amber-600/90 text-white shadow-lg shadow-amber-500/20"
-                  : "border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 disabled:opacity-50"
+                  : "border border-app bg-app-surface text-app-muted hover:bg-[var(--app-surface-hover)] disabled:opacity-50"
               }`}
             >
               {p.label}
@@ -42,16 +42,16 @@ export default function Focus() {
           ))}
         </div>
 
-        <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 md:p-12 text-center shadow-[0_0_40px_rgba(212,165,116,0.06)]">
+        <div className="rounded-xl border border-app bg-app-surface backdrop-blur-xl p-8 md:p-12 text-center shadow-app-timer">
           <p
             className={`text-5xl md:text-6xl font-mono font-medium mb-6 ${
-              timesUp ? "text-amber-400" : "text-white"
+              timesUp ? "text-amber-600 dark:text-amber-400" : "text-app"
             }`}
           >
             {formatTime(timeRemaining)}
           </p>
           {timesUp && (
-            <p className="text-amber-400 font-medium mb-6">Time's up. Nice focus.</p>
+            <p className="text-amber-700 dark:text-amber-400 font-medium mb-6">Time's up. Nice focus.</p>
           )}
           <div className="flex justify-center gap-3 flex-wrap">
             {!isRunning && timeRemaining > 0 && (
@@ -67,7 +67,7 @@ export default function Focus() {
               <button
                 type="button"
                 onClick={pause}
-                className="px-6 py-3 rounded-xl border border-white/10 bg-white/5 text-white hover:bg-white/10 transition-all"
+                className="px-6 py-3 rounded-xl border border-app bg-app-surface text-app hover:bg-[var(--app-surface-hover)] transition-all"
               >
                 Pause
               </button>
@@ -75,7 +75,7 @@ export default function Focus() {
             <button
               type="button"
               onClick={reset}
-              className="px-6 py-3 rounded-xl border border-white/10 bg-white/5 text-white/90 hover:bg-white/10 transition-all"
+              className="px-6 py-3 rounded-xl border border-app bg-app-surface text-app-secondary hover:bg-[var(--app-surface-hover)] transition-all"
             >
               Reset
             </button>
@@ -83,5 +83,5 @@ export default function Focus() {
         </div>
       </div>
     </Layout>
-  )
+  );
 }

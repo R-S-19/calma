@@ -67,7 +67,7 @@ export default function Habits() {
         if (!res.ok) throw new Error("Failed to update");
         return method === "POST" ? res.json() : null;
       })
-      .then((data) => {
+      .then(() => {
         const today = new Date().toISOString().slice(0, 10);
         const todayInView = today.startsWith(viewMonth);
         if (method === "POST") {
@@ -148,8 +148,8 @@ export default function Habits() {
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-semibold text-white mb-1">Habits</h2>
-            <p className="text-sm text-white/60">{today}</p>
+            <h2 className="text-2xl font-semibold text-app mb-1">Habits</h2>
+            <p className="text-sm text-app-muted">{today}</p>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -159,11 +159,11 @@ export default function Habits() {
                 const prev = new Date(y, m - 2, 1);
                 setViewMonth(`${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, "0")}`);
               }}
-              className="px-2 py-1 rounded-lg text-white/60 hover:text-white hover:bg-white/10 text-sm"
+              className="px-2 py-1 rounded-lg text-app-muted hover:text-app hover:bg-[var(--app-surface-hover)] text-sm"
             >
               ←
             </button>
-            <span className="text-sm text-white/70 min-w-[80px] text-center">
+            <span className="text-sm text-app-secondary min-w-[80px] text-center">
               {new Date(viewMonth + "-01").toLocaleDateString("en-US", { month: "long", year: "numeric" })}
             </span>
             <button
@@ -174,21 +174,21 @@ export default function Habits() {
                 setViewMonth(`${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}`);
               }}
               disabled={viewMonth >= new Date().toISOString().slice(0, 7)}
-              className="px-2 py-1 rounded-lg text-white/60 hover:text-white hover:bg-white/10 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2 py-1 rounded-lg text-app-muted hover:text-app hover:bg-[var(--app-surface-hover)] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               →
             </button>
           </div>
         </div>
 
-        <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl p-4 mb-6 shadow-[0_0_40px_rgba(212,165,116,0.06)]">
+        <div className="rounded-xl border border-app bg-app-surface backdrop-blur-xl p-4 mb-6 shadow-app-timer">
           <form onSubmit={handleAdd} className="flex gap-2">
             <input
               type="text"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="e.g. Meditate 5 min"
-              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-transparent"
+              className="flex-1 bg-app-input border border-app rounded-xl px-4 py-3 text-app placeholder:text-[var(--app-placeholder)] focus:outline-none focus:ring-2 focus:ring-[var(--app-ring)] focus:border-transparent"
               disabled={submitting}
             />
             <button
@@ -202,17 +202,17 @@ export default function Habits() {
         </div>
 
         {error && (
-          <p className="text-amber-400 text-sm bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 mb-6">
+          <p className="text-amber-700 dark:text-amber-400 text-sm bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 mb-6">
             {error}
           </p>
         )}
 
         {loading ? (
-          <p className="text-white/50">Loading habits…</p>
+          <p className="text-app-muted">Loading habits…</p>
         ) : habits.length === 0 ? (
-          <div className="rounded-xl border border-white/10 bg-white/5 p-8 text-center">
-            <p className="text-white/60 text-lg mb-2">No habits yet.</p>
-            <p className="text-white/40 text-sm">
+          <div className="rounded-xl border border-app bg-app-surface p-8 text-center">
+            <p className="text-app-muted text-lg mb-2">No habits yet.</p>
+            <p className="text-app-subtle text-sm">
               Add one above when you're ready. Small steps add up.
             </p>
           </div>
@@ -221,7 +221,7 @@ export default function Habits() {
             {habits.map((habit) => (
               <li
                 key={habit._id}
-                className="group rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all overflow-hidden"
+                className="group rounded-xl border border-app bg-app-surface hover:bg-[var(--app-surface-hover)] transition-all overflow-hidden"
               >
                 <div className="flex items-center gap-3 p-4">
                   <button
@@ -230,7 +230,7 @@ export default function Habits() {
                     className={`flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
                       habit.completedToday
                         ? "bg-amber-500 border-amber-500 text-white"
-                        : "border-white/30 hover:border-amber-400/60"
+                        : "border-[var(--app-checkbox-border)] hover:border-amber-500/60"
                     }`}
                     title={habit.completedToday ? "Mark not done" : "Mark done for today"}
                   >
@@ -247,13 +247,13 @@ export default function Habits() {
                         if (e.key === "Escape") setEditingId(null);
                       }}
                       autoFocus
-                      className="flex-1 bg-white/5 border border-white/20 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-amber-400/40"
+                      className="flex-1 bg-app-input border border-app-strong rounded-lg px-3 py-1.5 text-app focus:outline-none focus:ring-1 focus:ring-[var(--app-ring)]"
                     />
                   ) : (
                     <button
                       type="button"
                       onClick={() => handleEditName(habit)}
-                      className={`flex-1 text-left ${habit.completedToday ? "text-white/50 line-through" : "text-white font-medium"} hover:text-amber-400/80 transition-colors`}
+                      className={`flex-1 text-left ${habit.completedToday ? "text-app-muted line-through" : "text-app font-medium"} hover:text-amber-700 dark:hover:text-amber-400/80 transition-colors`}
                     >
                       {habit.name}
                     </button>
@@ -261,7 +261,7 @@ export default function Habits() {
                   <button
                     type="button"
                     onClick={() => handleDelete(habit._id)}
-                    className="text-sm text-white/60 hover:text-amber-400 opacity-60 group-hover:opacity-100 transition-all"
+                    className="text-sm text-app-muted hover:text-amber-600 dark:hover:text-amber-400 opacity-60 group-hover:opacity-100 transition-all"
                   >
                     Delete
                   </button>
@@ -280,5 +280,5 @@ export default function Habits() {
         )}
       </div>
     </Layout>
-  )
+  );
 }

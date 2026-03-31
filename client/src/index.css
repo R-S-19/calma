@@ -1,11 +1,113 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+  --app-bg-from: #f4f6fa;
+  --app-bg-via: #eceff5;
+  --app-bg-to: #e2e8f0;
+  --app-text: #0f172a;
+  --app-text-secondary: rgba(15, 23, 42, 0.78);
+  --app-text-muted: rgba(15, 23, 42, 0.58);
+  --app-text-subtle: rgba(15, 23, 42, 0.45);
+  --app-text-faint: rgba(15, 23, 42, 0.35);
+  --app-border: rgba(15, 23, 42, 0.11);
+  --app-border-strong: rgba(15, 23, 42, 0.18);
+  --app-surface: rgba(255, 255, 255, 0.78);
+  --app-surface-2: rgba(15, 23, 42, 0.04);
+  --app-surface-hover: rgba(15, 23, 42, 0.08);
+  --app-input-bg: rgba(255, 255, 255, 0.92);
+  --app-placeholder: rgba(15, 23, 42, 0.4);
+  --app-ring: rgba(180, 83, 9, 0.45);
+  --app-glow-center: rgba(180, 120, 60, 0.14);
+  --app-timer-shadow: rgba(180, 83, 9, 0.08);
+  --app-select-option-bg: #ffffff;
+  --app-select-option-text: #0f172a;
+  --app-checkbox-border: rgba(15, 23, 42, 0.28);
+  --app-dashed-border: rgba(15, 23, 42, 0.14);
+}
+
+.dark {
+  color-scheme: dark;
+  --app-bg-from: #0f1219;
+  --app-bg-via: #16191f;
+  --app-bg-to: #0d1014;
+  --app-text: #f8fafc;
+  --app-text-secondary: rgba(248, 250, 252, 0.8);
+  --app-text-muted: rgba(248, 250, 252, 0.6);
+  --app-text-subtle: rgba(248, 250, 252, 0.45);
+  --app-text-faint: rgba(248, 250, 252, 0.35);
+  --app-border: rgba(255, 255, 255, 0.1);
+  --app-border-strong: rgba(255, 255, 255, 0.16);
+  --app-surface: rgba(255, 255, 255, 0.05);
+  --app-surface-2: rgba(255, 255, 255, 0.03);
+  --app-surface-hover: rgba(255, 255, 255, 0.1);
+  --app-input-bg: rgba(255, 255, 255, 0.05);
+  --app-placeholder: rgba(248, 250, 252, 0.38);
+  --app-ring: rgba(251, 191, 36, 0.45);
+  --app-glow-center: rgba(212, 165, 116, 0.12);
+  --app-timer-shadow: rgba(212, 165, 116, 0.06);
+  --app-select-option-bg: #0f1219;
+  --app-select-option-text: #f8fafc;
+  --app-checkbox-border: rgba(255, 255, 255, 0.3);
+  --app-dashed-border: rgba(255, 255, 255, 0.16);
+}
+
 body {
   margin: 0;
   min-height: 100vh;
+  background-color: var(--app-bg-to);
+  color: var(--app-text);
 }
 
-/* Replace default focus outline (black square) with a subtle amber ring */
+.app-gradient-bg {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, var(--app-bg-from), var(--app-bg-via), var(--app-bg-to));
+}
+
+.app-radial-glow {
+  background: radial-gradient(circle at center, var(--app-glow-center), transparent 60%);
+}
+
+.text-app {
+  color: var(--app-text);
+}
+.text-app-secondary {
+  color: var(--app-text-secondary);
+}
+.text-app-muted {
+  color: var(--app-text-muted);
+}
+.text-app-subtle {
+  color: var(--app-text-subtle);
+}
+.text-app-faint {
+  color: var(--app-text-faint);
+}
+.border-app {
+  border-color: var(--app-border);
+}
+.border-app-strong {
+  border-color: var(--app-border-strong);
+}
+.bg-app-surface {
+  background-color: var(--app-surface);
+}
+.bg-app-surface-2 {
+  background-color: var(--app-surface-2);
+}
+.bg-app-input {
+  background-color: var(--app-input-bg);
+}
+.shadow-app-timer {
+  box-shadow: 0 0 40px var(--app-timer-shadow);
+}
+.shadow-app-card-mission {
+  box-shadow: 0 0 20px var(--app-timer-shadow);
+}
+
+/* Replace default focus outline (black square) with theme ring */
 button:focus,
 header a:focus {
   outline: none;
@@ -13,7 +115,7 @@ header a:focus {
 
 button:focus-visible,
 header a:focus-visible {
-  outline: 2px solid rgba(251, 191, 36, 0.5);
+  outline: 2px solid var(--app-ring);
   outline-offset: 2px;
 }
 
@@ -29,8 +131,7 @@ header nav a:focus-visible {
   background-color: transparent !important;
 }
 
-/* Override Firefox focus ring (can render as black box) */
 header nav a:-moz-focusring {
-  outline: 2px solid rgba(251, 191, 36, 0.5);
+  outline: 2px solid var(--app-ring);
   outline-offset: 2px;
 }
