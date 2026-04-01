@@ -4,6 +4,17 @@ import { getToken } from "../lib/auth";
 import Layout from "../components/Layout";
 import HabitActivityGrid from "../components/habits/HabitActivityGrid";
 
+/** Local calendar YYYY-MM (avoid UTC drift from ISO strings). */
+function localMonthKey(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+/** Format `viewMonth` (YYYY-MM) as "April 2026" using local date parts, not UTC parsing. */
+function formatViewMonthHeading(monthKey) {
+  const [y, m] = monthKey.split("-").map(Number);
+  return new Date(y, m - 1, 1).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+}
+
 export default function Habits() {
   const [habits, setHabits] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,10 +23,7 @@ export default function Habits() {
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editingName, setEditingName] = useState("");
-  const [viewMonth, setViewMonth] = useState(() => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-  });
+  const [viewMonth, setViewMonth] = useState(() => localMonthKey());
 
   const token = getToken();
   const headers = { Authorization: `Bearer ${token}` };
@@ -164,7 +172,7 @@ export default function Habits() {
               ←
             </button>
             <span className="text-sm text-app-secondary min-w-[80px] text-center">
-              {new Date(viewMonth + "-01").toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+              {formatViewMonthHeading(viewMonth)}
             </span>
             <button
               type="button"
@@ -173,7 +181,7 @@ export default function Habits() {
                 const next = new Date(y, m, 1);
                 setViewMonth(`${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}`);
               }}
-              disabled={viewMonth >= new Date().toISOString().slice(0, 7)}
+              disabled={viewMonth >= localMonthKey()}
               className="px-2 py-1 rounded-lg text-app-muted hover:text-app hover:bg-[var(--app-surface-hover)] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               →
