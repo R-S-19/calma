@@ -22,7 +22,7 @@ function NavLink({ to, children, current }) {
 export default function Layout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isRunning, timeRemaining, formatTime } = useFocusTimer();
+  const { isRunning, timeRemaining, formatTime, focusedTask } = useFocusTimer();
 
   function handleLogout() {
     removeToken();
@@ -37,10 +37,14 @@ export default function Layout({ children }) {
           {isRunning && (
             <Link
               to="/focus"
-              className="flex items-center gap-1.5 px-2 py-1 rounded text-sm font-medium bg-amber-500/20 text-amber-800 dark:text-amber-400"
+              className="flex items-center gap-2 min-w-0 max-w-[min(100%,18rem)] px-2 py-1 rounded text-sm font-medium bg-amber-500/20 text-amber-800 dark:text-amber-400"
+              title={focusedTask ? focusedTask.title : undefined}
             >
-              <span className="animate-pulse">●</span>
-              {formatTime(timeRemaining)}
+              <span className="animate-pulse shrink-0">●</span>
+              <span className="shrink-0 tabular-nums">{formatTime(timeRemaining)}</span>
+              {focusedTask && (
+                <span className="truncate text-xs font-normal opacity-90">· {focusedTask.title}</span>
+              )}
             </Link>
           )}
           <nav className="flex gap-3 text-sm">

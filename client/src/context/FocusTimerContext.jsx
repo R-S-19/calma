@@ -9,7 +9,15 @@ export function FocusTimerProvider({ children }) {
   const [timeRemaining, setTimeRemaining] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);
   const [timesUp, setTimesUp] = useState(false);
+  /** Task selected for the current / next focus block: { _id, title } or null */
+  const [focusedTask, setFocusedTask] = useState(null);
+  const focusedTaskRef = useRef(focusedTask);
   const hasReportedSession = useRef(false);
+
+  useEffect(() => {
+    focusedTaskRef.current = focusedTask;
+  }, [focusedTask]);
+
   useEffect(() => {
     if (!isRunning || timeRemaining <= 0) return;
     const id = setInterval(() => {
@@ -31,10 +39,12 @@ export function FocusTimerProvider({ children }) {
     playFocusCompleteSound();
     const token = getToken();
     if (token) {
+      const task = focusedTaskRef.current;
+      const body = task?._id ? { taskId: task._id } : {};
       fetch(`${API_URL}/api/focus/session`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({}),
+        body: JSON.stringify(body),
       }).catch(() => {});
     }
   }, [timesUp]);
@@ -76,6 +86,8 @@ export function FocusTimerProvider({ children }) {
     timeRemaining,
     isRunning,
     timesUp,
+    focusedTask,
+    setFocusedTask,
     start,
     pause,
     reset,

@@ -12,6 +12,11 @@ const focusSessionSchema = new mongoose.Schema(
       required: true,
       match: /^\d{4}-\d{2}-\d{2}$/,
     },
+    taskId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Task",
+      default: null,
+    },
   },
   { timestamps: true }
 );
