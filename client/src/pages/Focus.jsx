@@ -83,13 +83,18 @@ export default function Focus() {
             {tasksLoading && <option disabled>Loading tasks…</option>}
             {!tasksLoading &&
               openTasks.map((t) => (
-                <option key={t._id} value={t._id} className="bg-[var(--app-select-option-bg)] text-[var(--app-select-option-text)]">
+                <option
+                  key={t._id}
+                  value={t._id}
+                  className="bg-[var(--app-select-option-bg)] text-[var(--app-select-option-text)]"
+                >
                   {t.title}
                 </option>
               ))}
           </select>
           <p className="text-xs text-app-subtle mt-2">
-            Completed sessions are counted on the dashboard. If you pick a task, the session is linked to it for your records.
+            Completed sessions are counted on the dashboard. If you pick a task, the session is linked to it
+            for your records.
           </p>
         </div>
 
