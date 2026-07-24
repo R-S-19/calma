@@ -1,6 +1,7 @@
 # Calma
 
 **Live demo:** [calma-beta.vercel.app](https://calma-beta.vercel.app)
+> Note: the backend is hosted on a free tier and may take up to a minute to wake up on first load.
 
 An ADHD-friendly productivity web app.
 
@@ -21,6 +22,10 @@ An ADHD-friendly productivity web app.
 | Habits | Focus Timer |
 |---|---|
 | ![Habits](docs/screenshots/habitsdark.png) | ![Focus Timer](docs/screenshots/timerdark.png) |
+
+| Dashboard lite | 
+|---|
+| ![Dashboard](docs/screenshots/dashboardlite.png) |
 
 ## Tech Stack
 
@@ -76,10 +81,13 @@ npm run dev
 Visit **http://localhost:5173** in your browser.
 
 ## Project Structure
+
+```
 calma/
-├── client/ # React + Vite frontend
-└── server/ # Express API + MongoDB models
+├── client/     # React + Vite frontend
+└── server/     # Express API + MongoDB models
+```
 
 ## Status
 
-🚧 In development
+✅ Deployed and functional. Actively adding features and polish.
