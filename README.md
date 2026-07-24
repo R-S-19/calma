@@ -1,5 +1,7 @@
 # Calma
 
+**Live demo:** [calma-beta.vercel.app](https://calma-beta.vercel.app)
+
 An ADHD-friendly productivity web app.
 
 ## Features
@@ -9,6 +11,16 @@ An ADHD-friendly productivity web app.
 - **Habits** – Track daily habits with a visual activity grid
 - **Focus timer** – Pomodoro-style timer (25/15/5 min presets) with session tracking
 - **Dashboard** – Daily summary of tasks completed, habits done, and focus sessions
+
+## Screenshots
+
+| Dashboard | Tasks |
+|---|---|
+| ![Dashboard](docs/screenshots/dashboarddark.png) | ![Tasks](docs/screenshots/tasksdark.png) |
+
+| Habits | Focus Timer |
+|---|---|
+| ![Habits](docs/screenshots/habitsdark.png) | ![Focus Timer](docs/screenshots/timerdark.png) |
 
 ## Tech Stack
 
