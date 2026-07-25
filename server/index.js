@@ -13,6 +13,11 @@ const User = require("./models/User");
 
 const app = express();
 
+
+// Trust the first proxy hop (needed on Render/Railway/Heroku-style platforms
+// so express-rate-limit sees the real client IP, not the proxy's IP).
+app.set("trust proxy", 1);
+
 // Middleware (runs on every request)
 const allowedOrigins = [
   "http://localhost:5173",
