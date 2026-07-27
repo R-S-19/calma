@@ -216,7 +216,20 @@ export default function Habits() {
         )}
 
         {loading ? (
-          <p className="text-app-muted">Loading habits…</p>
+          <ul className="space-y-3 animate-pulse">
+            {[1, 2, 3].map((i) => (
+              <li
+                key={i}
+                className="rounded-xl border border-app bg-app-surface p-4 space-y-3"
+              >
+               <div className="flex items-center gap-3">
+                 <div className="w-6 h-6 rounded bg-app-surface-2 shrink-0" />
+                 <div className="h-4 bg-app-surface-2 rounded w-1/3" />
+               </div>
+               <div className="h-16 bg-app-surface-2 rounded-lg" />
+             </li>
+            ))}
+          </ul>
         ) : habits.length === 0 ? (
           <div className="rounded-xl border border-app bg-app-surface p-8 text-center">
             <p className="text-app-muted text-lg mb-2">No habits yet.</p>

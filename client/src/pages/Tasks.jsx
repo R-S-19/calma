@@ -381,8 +381,28 @@ export default function Tasks() {
             )}
 
             {loading ? (
-              <p className="text-app-muted py-8 text-center">Loading tasks…</p>
-            ) : tasks.length === 0 ? (
+              <div className="space-y-3 animate-pulse">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="h-5 bg-app-surface-2 rounded w-20" />
+                  <div className="h-4 bg-app-surface-2 rounded w-16" />
+                </div>
+                <div className="border-t border-app my-6" />
+                {[1, 2, 3].map((i) => (
+                 <div
+                   key={i}
+                   className="flex items-center gap-3 p-4 rounded-xl border border-app bg-app-surface-2"
+                 >
+                  <div className="w-5 h-5 rounded bg-[var(--app-surface-hover)] shrink-0" />
+                  <div className="h-5 w-16 rounded bg-[var(--app-surface-hover)] shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-[var(--app-surface-hover)] rounded w-1/3" />
+                    <div className="h-3 bg-[var(--app-surface-hover)] rounded w-1/4" />
+                 </div>
+               </div>
+              ))}
+            </div>
+          ) : tasks.length === 0 ? (
+
               <div className="py-12 text-center">
                 <p className="text-app-muted text-lg mb-2">Nothing on your list yet.</p>
                 <p className="text-app-subtle text-sm">
