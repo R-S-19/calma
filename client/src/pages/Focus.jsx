@@ -29,11 +29,13 @@ export default function Focus() {
   } = useFocusTimer();
 
   useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      setTasksLoading(false);
-      return;
-    }
+  const token = getToken();
+  if (!token) {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- early-exit guard, not a cascading render
+    setTasksLoading(false);
+    return;
+  }
+  // ... rest of the effect (the fetch call)
     fetch(`${API_URL}/api/tasks`, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => (res.ok ? res.json() : { tasks: [] }))
       .then((data) => {

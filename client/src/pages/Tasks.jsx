@@ -171,8 +171,8 @@ export default function Tasks() {
   }
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+  fetchTasks();
+}, []); // eslint-disable-line react-hooks/exhaustive-deps -- fetchTasks intentionally runs once on mount
 
   async function handleAdd(e) {
     e.preventDefault();

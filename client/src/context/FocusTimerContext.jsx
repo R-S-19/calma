@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- context + hook pattern */
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { API_URL } from "../lib/api";
 import { getToken } from "../lib/auth";

@@ -110,7 +110,8 @@ export default function Dashboard() {
         navigate("/", { replace: true });
       })
       .finally(() => setLoading(false));
-  }, [token, navigate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- headers is derived from token each render; re-including it would cause unnecessary refetches
+}, [token, navigate]);
 
   function getGreeting() {
     const hour = new Date().getHours();

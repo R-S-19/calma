@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components -- context + hook pattern */
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
 
 const STORAGE_KEY = "calma-theme";
 
@@ -22,7 +22,7 @@ export function ThemeProvider({ children }) {
     document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
 
-  function setTheme(next) {
+  const setTheme = useCallback((next) => {
     if (next !== "light" && next !== "dark") return;
     setThemeState(next);
     try {
@@ -30,13 +30,13 @@ export function ThemeProvider({ children }) {
     } catch {
       /* ignore */
     }
-  }
+  }, []);
 
-  function toggleTheme() {
+  const toggleTheme = useCallback(() => {
     setTheme(theme === "dark" ? "light" : "dark");
-  }
+  }, [theme, setTheme]);
 
-  const value = useMemo(() => ({ theme, setTheme, toggleTheme }), [theme]);
+  const value = useMemo(() => ({ theme, setTheme, toggleTheme }), [theme, setTheme, toggleTheme]);
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

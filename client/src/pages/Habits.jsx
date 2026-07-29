@@ -42,8 +42,8 @@ export default function Habits() {
   }
 
   useEffect(() => {
-    fetchHabits();
-  }, [viewMonth]);
+  fetchHabits();
+}, [viewMonth]); // eslint-disable-line react-hooks/exhaustive-deps -- fetchHabits is redefined each render; only viewMonth should trigger a refetch
 
   async function handleAdd(e) {
     e.preventDefault();
